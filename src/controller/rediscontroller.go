@@ -1,33 +1,36 @@
 package controller
 
 import (
-	"net/http"
-
-	"github.com/YakobusIP/BNMO-Backend.git/exchange"
-	"github.com/YakobusIP/BNMO-Backend.git/symbolcache"
-	"github.com/gin-gonic/gin"
+	"BNMO/exchange"
+	"BNMO/ratescache"
+	"fmt"
+	"time"
 )
 
 
 var (
-	redis symbolcache.SymbolCache = symbolcache.NewSymbolRedisCache("localhost:6379", 0, 86400)
+	redis ratescache.RatesCache = ratescache.NewRatesRedisCache("localhost:6379", 0, time.Hour * 24)
 )
 
-func GetSymbolsFromRedis(c *gin.Context) {
-	// Pick one of the currencies because 
+func GetRatesFromRedis(requestedKey string) (string, float64) {
+	// Check cache availability
+	cacheEntry := redis.GetRates(requestedKey)
 	
+	// Cache hit events
+	if cacheEntry != -1 && cacheEntry != -2 {
+		fmt.Println("Value found within redis")
+		return "Cache", cacheEntry
+	}
 
-	//var cacheEntry interface{} = redis.GetSymbol("symbols")
-	// If cache hit
-	/* if cacheEntry != nil {
-		fmt.Println("Not nil")
-		c.JSON(http.StatusOK, gin.H{"source":"cache",
-		"symbols": cacheEntry})
-		return
-	} */
-
-	// If cache miss
-	var symbols interface{} = exchange.GetSymbolsFromAPI().Symbols
-	redis.SetSymbol("symbols", symbols)
-	c.JSON(http.StatusOK, gin.H{"source":"API", "symbols": symbols})
+	// Cache miss events
+	var rates map[string]float64 = exchange.RequestRatesFromAPI().Rates
+	var output float64
+	for key, value := range rates {
+		if key == requestedKey {
+			output = value
+		}
+		redis.SetRates(key, value)
+	}
+	
+	return "API", output
 }

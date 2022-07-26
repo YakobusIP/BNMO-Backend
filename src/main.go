@@ -1,7 +1,9 @@
 package main
 
 import (
-	"github.com/YakobusIP/BNMO-Backend.git/routes"
+	"BNMO/database"
+	"BNMO/routes"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
@@ -11,6 +13,7 @@ var (
 )
 
 func main() {
+	database.Initialize()
 	Router.Use(cors.Default())
 	routes.MapUrls(Router)
 	Router.Run()

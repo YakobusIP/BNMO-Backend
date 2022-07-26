@@ -6,13 +6,15 @@ import (
 	"net/http"
 )
 
-type SymbolStruct struct {
-	Success bool `json:"success"`
-	Symbols interface{} `json:"symbols"`
+type ExchangeRates struct {
+	Base    string             `json:"base"`
+	Date    string             `json:"date"`
+	Rates   map[string]float64 `json:"rates"`
+	Success bool               `json:"success"`
 }
 
-func GetSymbolsFromAPI() SymbolStruct {
-	url := "https://api.apilayer.com/exchangerates_data/symbols"
+func RequestRatesFromAPI() ExchangeRates {
+	url := "https://api.apilayer.com/exchangerates_data/latest?symbols=&base=IDR"
 
 	client := &http.Client{}
 	request, err := http.NewRequest("GET", url, nil)
@@ -30,7 +32,7 @@ func GetSymbolsFromAPI() SymbolStruct {
 
 	body, _ := ioutil.ReadAll(result.Body)
 
-	var output SymbolStruct
+	var output ExchangeRates
 	json.Unmarshal(body, &output)
 
 	return output
