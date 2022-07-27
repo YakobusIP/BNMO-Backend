@@ -52,7 +52,7 @@ func DisplayRequests(c *gin.Context) {
 		"metadata": gin.H{
 			"total": total,
 			"page": page,
-			"last_page": math.Ceil(float64(int(total)/limit)),
+			"last_page": math.Ceil(float64(total)/float64(limit)),
 		},
 	})
 }
@@ -77,7 +77,7 @@ func ValidateRequests(c *gin.Context) {
 		// Pull data from request and account tables
 		database.DATABASE.First(&request, uint(data["id"].(float64)))
 		database.DATABASE.First(&account, request.AccountID)
-		source, conversionRates := GetRatesFromRedis(request.Currency)
+		source, conversionRates := getRatesFromRedis(request.Currency)
 		fmt.Println(source)
 
 		// Request type: add

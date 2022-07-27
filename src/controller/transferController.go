@@ -38,7 +38,7 @@ func Transfer(c *gin.Context) {
 	database.DATABASE.Find(&destination, transfer.Destination)
 
 	// Pull rates from redis
-	_, conversionRates := GetRatesFromRedis(transfer.Currency)
+	_, conversionRates := getRatesFromRedis(transfer.Currency)
 	convertedAmount := float64(transfer.Amount) / conversionRates
 
 	// If balance is insufficient

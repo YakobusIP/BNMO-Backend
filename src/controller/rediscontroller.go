@@ -12,7 +12,7 @@ var (
 	redis ratescache.RatesCache = ratescache.NewRatesRedisCache("localhost:6379", 0, time.Hour * 24)
 )
 
-func GetRatesFromRedis(requestedKey string) (string, float64) {
+func getRatesFromRedis(requestedKey string) (string, float64) {
 	// Check cache availability
 	cacheEntry := redis.GetRates(requestedKey)
 	
