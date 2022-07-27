@@ -13,7 +13,7 @@ var (
 )
 
 func Initialize() {
-	dsn := "root:YIP190602@tcp(localhost)/bnmo_database?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "root:YIP190602@tcp(localhost)/bnmo?charset=utf8mb4&parseTime=True&loc=Local"
 
 	// Connect to database using gorm
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
@@ -35,6 +35,8 @@ func seed(db *gorm.DB) {
 	accounts := models.Account{
 		AccountType: "admin",
 		AccountStatus: "accepted",
+		FirstName: "Admin",
+		LastName: "Admin",
 		Email: "admin@gmail.com", 
 		Username: "admin",
 		ImagePath: "./images/Admin.png",

@@ -5,6 +5,7 @@ import (
 	"BNMO/models"
 	"BNMO/utilities"
 	"fmt"
+	"math"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -61,6 +62,8 @@ func RegisterAccount(c *gin.Context) {
 	account := models.Account{
 		AccountType: data["account_type"].(string),
 		AccountStatus: data["account_status"].(string),
+		FirstName: data["first_name"].(string),
+		LastName: data["last_name"].(string),
 		Email: strings.TrimSpace(data["email"].(string)),
 		Username: data["username"].(string),
 		ImagePath: data["image_path"].(string),
@@ -103,20 +106,72 @@ func LoginAccount(c *gin.Context) {
 		return
 	}
 
-	// Authenticate user
-	token, err := utilities.GenerateJWT(strconv.Itoa(int(account.ID)))
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, nil)
-		return
-	}
+	if account.AccountStatus == "accepted" {	
+		// Authenticate user
+		token, err := utilities.GenerateJWT(strconv.Itoa(int(account.ID)))
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, nil)
+			return
+		}
 
-	// Set cookies
-	c.SetCookie("jwt", token, int(time.Now().Add(time.Hour * 24).Unix()), "", "", true, true)
-	c.JSON(http.StatusOK, gin.H{"account": account,
-		"message": "Login successful"})
-	
+		// Set cookies
+		c.SetCookie("jwt", token, int(time.Now().Add(time.Hour * 24).Unix()), "", "", true, true)
+		c.JSON(http.StatusOK, gin.H{"account": account,
+			"message": "Login successful"})
+	} else if account.AccountStatus == "pending" {
+		c.JSON(http.StatusBadRequest, gin.H{"message":"Account isn't verified. Please wait for validation"})
+		return
+	} else if account.AccountStatus == "rejected" {
+		c.JSON(http.StatusBadRequest, gin.H{"message":"Account is rejected. Please contact our support"})
+		return
+	} 
 }
 
 type Claims struct {
 	jwt.StandardClaims
 } 
+
+func DisplayPendingAccount(c *gin.Context) {
+	// Specify limitations
+	page, _ := strconv.Atoi(c.Query("page"))
+	limit := 5
+	offset := (page-1) * limit
+
+	var total int64
+	var getAccounts []models.Account
+
+	// Pull data from the requests table inside the database
+	// Pull only based on the number of offsets and limits specified
+	database.DATABASE.Preload("Accounts").Offset(offset).Limit(limit).Where("account_status=?", "pending").Find(&getAccounts)
+	database.DATABASE.Model(&models.Account{}).Where("account_status=?", "pending").Count(&total)
+
+	// Return data to frontend
+	c.JSON(http.StatusOK, gin.H{
+		"data": getAccounts,
+		"metadata": gin.H{
+			"total": total,
+			"page": page,
+			"last_page": math.Ceil(float64(int(total)/limit)),
+		},
+	})
+}
+
+func ValidateAccount(c *gin.Context) {
+	var data map[string]interface{}
+	var account models.Account
+
+	// Bind arriving json into a map
+	err := c.BindJSON(&data)
+	if err != nil {
+		fmt.Println("Unable to parse body into a validate_request struct:" + err.Error())
+		return
+	}
+
+	if data["validation"] == "accepted" {
+		database.DATABASE.First(&account, uint(data["id"].(float64))).Update("account_status", "accepted")
+	} else if data["validation"] == "rejected" {
+		database.DATABASE.First(&account, uint(data["id"].(float64))).Update("account_status", "rejected")
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Account validation successful"})
+}
