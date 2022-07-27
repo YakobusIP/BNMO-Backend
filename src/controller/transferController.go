@@ -12,11 +12,11 @@ import (
 
 func DisplayAccounts(c *gin.Context) {
 	var account []models.Account
-	var displayAccounts []models.DisplayAccount
-	database.DATABASE.Select("id", "first_name", "last_name", "username").Find(&account).Scan(&displayAccounts)
+	var transferAccounts []models.TransferAccount
+	database.DATABASE.Where(map[string]string{"account_type":"customer", "account_status": "accepted"}).Select("id", "first_name", "last_name", "username").Find(&account).Scan(&transferAccounts)
 
 	c.JSON(http.StatusOK, gin.H{
-		"data": displayAccounts,
+		"data": transferAccounts,
 	})
 }
 

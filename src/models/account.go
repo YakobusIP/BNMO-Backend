@@ -1,6 +1,8 @@
 package models
 
 import (
+	"time"
+
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -19,11 +21,22 @@ type Account struct {
     Balance 		uint	`json:"balance" gorm:"not null"`
 }
 
-type DisplayAccount struct {
+type TransferAccount struct {
 	ID				uint	`json:"id"`
 	FirstName		string	`json:"first_name"`
 	LastName		string	`json:"last_name"`
 	Username		string	`json:"username"`
+}
+
+type CustomerData struct {
+	ID				uint		`json:"id"`
+	FirstName		string		`json:"first_name"`
+	LastName		string		`json:"last_name"`
+	Username		string		`json:"username"`
+	Email 			string		`json:"email"`
+	ImagePath 		string		`json:"image_path"`
+    Balance 		uint		`json:"balance"`
+	CreatedAt		time.Time	`json:"created_at"`
 }
 
 // Function to hash password using bcrypt with salt
