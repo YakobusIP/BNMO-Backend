@@ -142,7 +142,7 @@ func DisplayPendingAccount(c *gin.Context) {
 
 	// Pull data from the requests table inside the database
 	// Pull only based on the number of offsets and limits specified
-	database.DATABASE.Preload("Accounts").Offset(offset).Limit(limit).Where("account_status=?", "pending").Find(&getAccounts)
+	database.DATABASE.Offset(offset).Limit(limit).Where("account_status=?", "pending").Find(&getAccounts)
 	database.DATABASE.Model(&models.Account{}).Where("account_status=?", "pending").Count(&total)
 
 	// Return data to frontend
