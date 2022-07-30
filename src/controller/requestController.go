@@ -22,6 +22,13 @@ func CustomerRequest(c *gin.Context) {
 		return
 	}
 
+	// Pull conversion rate from redis
+	source, conversionRates := getRatesFromRedis(request.Currency)
+	fmt.Println(source)
+	// Calculate converted amount
+	convertedAmount := float64(request.Amount) / conversionRates
+	request.ConvertedAmount = uint(math.Floor(convertedAmount))
+
 	err = database.DATABASE.Create(&request).Error
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to add request"})
@@ -72,38 +79,32 @@ func ValidateRequests(c *gin.Context) {
 
 	// If status is accepted, start procedures
 	if data["validation"] == "accepted" {
-		var convertedAmount float64
 		// Check statements
 		// Pull data from request and account tables
 		database.DATABASE.First(&request, uint(data["id"].(float64)))
 		database.DATABASE.First(&account, request.AccountID)
-		source, conversionRates := getRatesFromRedis(request.Currency)
-		fmt.Println(source)
 
 		// Request type: add
 		if request.RequestType == "add" {
-			convertedAmount = float64(request.Amount) / conversionRates
-			newBalance := account.Balance + uint(math.Floor(convertedAmount))
+			newBalance := account.Balance + request.ConvertedAmount
 			database.DATABASE.First(&account, request.AccountID).Update("balance", newBalance)
 		}
 
 		// Request type: subtract
 		if request.RequestType == "subtract" {
 			// If balance is insufficient, reject the request
-			if account.Balance < request.Amount {
+			if account.Balance < request.ConvertedAmount {
 				database.DATABASE.First(&request, data["id"]).Update("status", "rejected")
 				c.JSON(http.StatusBadRequest, gin.H{"message": "Insufficient balance"})
 				return
 			} else {
-				convertedAmount = float64(request.Amount) / conversionRates
-				newBalance := account.Balance - uint(math.Floor(convertedAmount))
+				newBalance := account.Balance - request.ConvertedAmount
 				database.DATABASE.First(&account, request.AccountID).Update("balance", newBalance)
 			}
 		}
 
 		// Update value inside request table
 		database.DATABASE.First(&request, uint(data["id"].(float64))).Update("status", data["validation"].(string))
-		database.DATABASE.First(&request, uint(data["id"].(float64))).Update("converted_amount", uint(math.Floor(convertedAmount)))
 		c.JSON(http.StatusOK, gin.H{"message": "Successfully accepted"})
 		return
 		

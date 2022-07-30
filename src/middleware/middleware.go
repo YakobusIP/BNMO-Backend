@@ -11,7 +11,8 @@ import (
 func IsAuthenticate(c *gin.Context) {
 	cookie, err := c.Cookie("jwt")
 	if err != nil {
-		fmt.Println("Cannot get cookie from request")
+		fmt.Println("Cannot get cookie from request", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Could not retrieve cookies"})
 		return
 	}
 

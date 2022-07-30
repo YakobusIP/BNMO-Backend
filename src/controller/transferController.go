@@ -40,6 +40,7 @@ func Transfer(c *gin.Context) {
 	// Pull rates from redis
 	_, conversionRates := getRatesFromRedis(transfer.Currency)
 	convertedAmount := float64(transfer.Amount) / conversionRates
+	database.DATABASE.Model(&transfer).Update("converted_amount", uint(math.Floor(convertedAmount)))
 
 	// If balance is insufficient
 	if source.Balance < uint(math.Floor(convertedAmount)) {
@@ -57,6 +58,5 @@ func Transfer(c *gin.Context) {
 	database.DATABASE.Find(&source, transfer.AccountID).Update("balance", newSourceBalance)
 	database.DATABASE.Find(&destination, transfer.Destination).Update("balance", newDestinationBalance)
 	database.DATABASE.Model(&transfer).Update("status", "success")
-	database.DATABASE.Model(&transfer).Update("converted_amount", uint(math.Floor(convertedAmount)))
 	c.JSON(http.StatusOK, gin.H{"message": "Transfer completed"})
 }

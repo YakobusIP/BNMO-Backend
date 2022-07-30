@@ -1,6 +1,7 @@
 package utilities
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/golang-jwt/jwt"
@@ -22,8 +23,9 @@ func ParseJWT(cookie string) (string, error) {
 		return []byte(SecretKey), nil
 	})
 
-	if err != nil || !token.Valid {
-		return "", err
+	if err != nil {
+		fmt.Println("Failed parsing")
+		return "Error parsing cookie", err
 	}
 
 	claims := token.Claims.(*jwt.StandardClaims)

@@ -10,7 +10,6 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
@@ -110,12 +109,12 @@ func LoginAccount(c *gin.Context) {
 		// Authenticate user
 		token, err := utilities.GenerateJWT(strconv.Itoa(int(account.ID)))
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, nil)
+			c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to login"})
 			return
 		}
 
 		// Set cookies
-		c.SetCookie("jwt", token, int(time.Now().Add(time.Hour * 24).Unix()), "", "", true, true)
+		c.SetCookie("jwt", token, 3600, "/", "localhost", false, true)
 		c.JSON(http.StatusOK, gin.H{"account": account,
 			"message": "Login successful"})
 	} else if account.AccountStatus == "pending" {
@@ -174,4 +173,9 @@ func ValidateAccount(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "Account validation successful"})
+}
+
+func LogoutAccount(c *gin.Context) {
+	c.SetCookie("jwt", "", -1, "", "", false, true)
+	c.JSON(http.StatusOK, gin.H{"message": "Log out successful"})
 }

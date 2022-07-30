@@ -10,8 +10,14 @@ import (
 func MapUrls(Router *gin.Engine) {
 	// Register account
 	Router.POST("/api/register", controller.RegisterAccount)
+	// Upload image
+	Router.POST("/api/upload-image", controller.Upload)
 	// Login account
 	Router.POST("/api/login", controller.LoginAccount)
+	// Logout accounts
+	Router.POST("/api/logout", controller.LogoutAccount)
+	// Get image
+	Router.Static("/api/uploads", "./images")
 	// Display requests for admin
 	Router.GET("/api/displayrequest", controller.DisplayRequests)
 	// Validate selected requests for admin

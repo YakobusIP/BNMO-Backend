@@ -23,6 +23,7 @@ func getRatesFromRedis(requestedKey string) (string, float64) {
 	}
 
 	// Cache miss events
+	fmt.Println("Pulling value from API")
 	var rates map[string]float64 = exchange.RequestRatesFromAPI().Rates
 	var output float64
 	for key, value := range rates {
