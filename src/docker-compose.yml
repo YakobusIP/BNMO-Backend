@@ -5,12 +5,12 @@ version: "3.8"
 services:
   mysql:
     image: mariadb
-    restart: always
+    restart: unless-stopped
     container_name: db
     ports:
       - "3306:3306"
     volumes:
-      - mariadb_data:/docker-entrypoint-initdb.d
+      - ./mariadb_data:/docker-entrypoint-initdb.d
     environment:
       MYSQL_ROOT_PASSWORD: admin
       MYSQL_DATABASE: bnmo

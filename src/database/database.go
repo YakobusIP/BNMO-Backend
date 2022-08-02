@@ -13,7 +13,7 @@ var (
 )
 
 func Initialize() {
-	dsn := "root:admin@tcp(db:3306)/bnmo?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "root:admin@tcp(db)/bnmo?charset=utf8mb4&parseTime=True&loc=Local"
 
 	// Connect to database using gorm
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
