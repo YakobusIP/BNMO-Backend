@@ -1,40 +1,7 @@
 # 1. Specify the version for docker-compose.yml
 version: "3.8"
 
-# 2. Generate redis service
-services:
-  mysql:
-    image: mariadb
-    restart: unless-stopped
-    container_name: db
-    ports:
-      - "3306:3306"
-    volumes:
-      - ./mariadb_data:/docker-entrypoint-initdb.d
-    environment:
-      MYSQL_ROOT_PASSWORD: admin
-      MYSQL_DATABASE: bnmo
-      MYSQL_USER: root
-      MYSQL_PASSWORD: admin
-      
-    
-  redis:
-    container_name: "redis"
-    image: redis:alpine
-    command: redis-server /usr/local/etc/redis/redis.conf
-    ports:
-      - "6379:6379"
-    volumes:
-      - /redis.conf:/usr/local/etc/redis/redis.conf
-
-  go:
-    container_name: "bnmo"
-    image: bnmo/redis
-    ports:
-      - "8080:8080"
-    depends_on:
-      - mysql
-      - redis
-
-volumes:
-  mariadb_data:
+# 2. Set heroku build
+build:
+  docker:
+    web: Dockerfile
