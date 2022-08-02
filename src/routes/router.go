@@ -18,19 +18,10 @@ func MapUrls(Router *gin.Engine) {
 	Router.POST("/api/logout", controller.LogoutAccount)
 	// Get image
 	Router.Static("/api/uploads", "./images")
-	// Display requests for admin
-	Router.GET("/api/displayrequest", controller.DisplayRequests)
-	// Validate selected requests for admin
-	Router.POST("/api/validaterequest", controller.ValidateRequests)
-	// Display pending accounts for admin
-	Router.GET("/api/displaypending", controller.DisplayPendingAccount)
-	// Validate selected accounts for admin
-	Router.POST("/api/validateaccount", controller.ValidateAccount)
-	// Display all customer data
-	Router.GET("/api/customerdata", controller.SendAllCustomerData)
 	
-	// Customer side
+	// Authorized side (both customer and admin)
 	Router.Use(middleware.IsAuthenticate)
+	/* CUSTOMER SIDE */
 	// Show user profile
 	Router.GET("/api/profile/:id", controller.ShowProfile)
 	// Request add balance
@@ -45,4 +36,18 @@ func MapUrls(Router *gin.Engine) {
 	Router.GET("/api/requesthistory", controller.RequestHistory)
 	// Get transfer history
 	Router.GET("/api/transferhistory", controller.TransferHistory)
+	// Update image
+	Router.POST("/api/updateimage", controller.UpdateImage)
+
+	/* ADMIN SIDE */
+	// Display requests for admin
+	Router.GET("/api/displayrequest", controller.DisplayRequests)
+	// Validate selected requests for admin
+	Router.POST("/api/validaterequest", controller.ValidateRequests)
+	// Display pending accounts for admin
+	Router.GET("/api/displaypending", controller.DisplayPendingAccount)
+	// Validate selected accounts for admin
+	Router.POST("/api/validateaccount", controller.ValidateAccount)
+	// Display all customer data
+	Router.GET("/api/customerdata", controller.SendAllCustomerData)
 }

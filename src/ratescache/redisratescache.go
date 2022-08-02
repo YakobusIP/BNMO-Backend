@@ -2,6 +2,7 @@ package ratescache
 
 import (
 	"context"
+	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -37,9 +38,16 @@ func (cache *redisRatesCache) getRatesClient() *redis.Client {
 
 func (cache *redisRatesCache) SetRates(key string, value float64) {
 	client := cache.getRatesClient()
-	client.Set(ctx, key, value, cache.expires*time.Second)
+	setter := client.Set(ctx, key, value, cache.expires*time.Second)
+	if setter.Err() != nil {
+		fmt.Println("Failed to set value in redis cache")
+	}
+	fmt.Println("Successfully set rates in redis cache")
 }
 
+// Known bugs: connecting to redis cache may fail and display an error
+// i/o timeout.
+// Possible fix: Restart device
 func (cache *redisRatesCache) GetRates(key string) float64 {
 	client := cache.getRatesClient()
 

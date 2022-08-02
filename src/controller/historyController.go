@@ -11,6 +11,8 @@ import (
 )
 
 func RequestHistory(c *gin.Context) {
+	// Account ID
+	id, _ := strconv.Atoi(c.Query("id"))
 	// Specify limitations
 	page, _ := strconv.Atoi(c.Query("page"))
 	limit := 5
@@ -21,7 +23,7 @@ func RequestHistory(c *gin.Context) {
 
 	// Pull data from the requests table inside the database
 	// Pull only based on the number of offsets and limits specified
-	database.DATABASE.Offset(offset).Limit(limit).Find(&getRequests)
+	database.DATABASE.Offset(offset).Limit(limit).Where("account_id=?", id).Find(&getRequests)
 	database.DATABASE.Model(&models.Request{}).Count(&total)
 
 	// Return data to frontend
@@ -36,6 +38,8 @@ func RequestHistory(c *gin.Context) {
 }
 
 func TransferHistory(c *gin.Context) {
+	// Account ID
+	id, _ := strconv.Atoi(c.Query("id"))
 	// Specify limitations
 	page, _ := strconv.Atoi(c.Query("page"))
 	limit := 5
@@ -46,8 +50,8 @@ func TransferHistory(c *gin.Context) {
 
 	// Pull data from the requests table inside the database
 	// Pull only based on the number of offsets and limits specified
-	database.DATABASE.Offset(offset).Limit(limit).Find(&getTransfers)
-	database.DATABASE.Model(&models.Request{}).Count(&total)
+	database.DATABASE.Offset(offset).Limit(limit).Where("account_id=?", id).Find(&getTransfers)
+	database.DATABASE.Model(&models.Transfer{}).Count(&total)
 
 	// Return data to frontend
 	c.JSON(http.StatusOK, gin.H{

@@ -1,12 +1,13 @@
-FROM golang AS builder
+FROM golang:latest AS builder
 
 COPY ./src /app
 WORKDIR /app
 
-RUN go get github.com/go-redis/redis/v9
-RUN go get -u github.com/gin-gonic/gin
-RUN go get github.com/gin-contrib/cors
-RUN go get -u gorm.io/gorm
+COPY /src/go.mod .
+COPY /src/go.sum .
+
+RUN go mod download
+COPY . .
 
 RUN go build -o /main
 

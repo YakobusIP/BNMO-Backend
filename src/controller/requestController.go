@@ -50,7 +50,7 @@ func DisplayRequests(c *gin.Context) {
 
 	// Pull data from the requests table inside the database
 	// Pull only based on the number of offsets and limits specified
-	database.DATABASE.Offset(offset).Limit(limit).Where("status=?", "pending").Find(&getRequests)
+	database.DATABASE.Preload("Account").Offset(offset).Limit(limit).Where("status=?", "pending").Find(&getRequests)
 	database.DATABASE.Model(&models.Request{}).Where("status=?", "pending").Count(&total)
 
 	// Return data to frontend

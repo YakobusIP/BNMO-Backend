@@ -9,7 +9,6 @@ import (
 
 type Account struct {
 	gorm.Model
-	ID 				uint	`json:"id"`
 	AccountType		string 	`json:"account_type" gorm:"not null"`
 	AccountStatus	string	`json:"account_status" gorm:"not null"`
 	FirstName		string	`json:"first_name" gorm:"not null"`
@@ -29,7 +28,7 @@ type TransferAccount struct {
 }
 
 type CustomerData struct {
-	ID				uint		`json:"id"`
+	ID				uint		`json:"profile_id"`
 	FirstName		string		`json:"first_name"`
 	LastName		string		`json:"last_name"`
 	Username		string		`json:"username"`

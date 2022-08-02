@@ -39,10 +39,11 @@ func seed(db *gorm.DB) {
 		LastName: "Admin",
 		Email: "admin@gmail.com", 
 		Username: "admin",
-		Password: []byte("admin"),
 		ImagePath: "./images/Admin.png",
 		Balance: 0,
 	}
+
+	accounts.SetPassword("admin");
 
 	db.Create(&accounts)
 }
