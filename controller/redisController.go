@@ -9,7 +9,7 @@ import (
 
 
 var (
-	redis ratescache.RatesCache = ratescache.NewRatesRedisCache("localhost:6379", 0, time.Hour * 24)
+	redis ratescache.RatesCache = ratescache.NewRatesRedisCache("redis:6379", 0, time.Hour * 24)
 )
 
 func getRatesFromRedis(requestedKey string) (string, float64) {

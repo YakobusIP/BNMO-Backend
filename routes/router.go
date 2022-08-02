@@ -17,7 +17,7 @@ func MapUrls(Router *gin.Engine) {
 	// Logout accounts
 	Router.POST("/api/logout", controller.LogoutAccount)
 	// Get image
-	Router.Static("/api/uploads", "./images")
+	Router.Static("/api/uploads", "images")
 	
 	// Authorized side (both customer and admin)
 	Router.Use(middleware.IsAuthenticate)

@@ -37,3 +37,4 @@ services:
       - redis
 
 volumes:
+  mariadb_data:

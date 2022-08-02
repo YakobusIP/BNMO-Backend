@@ -41,6 +41,7 @@ func (cache *redisRatesCache) SetRates(key string, value float64) {
 	setter := client.Set(ctx, key, value, cache.expires*time.Second)
 	if setter.Err() != nil {
 		fmt.Println("Failed to set value in redis cache")
+		return
 	}
 	fmt.Println("Successfully set rates in redis cache")
 }

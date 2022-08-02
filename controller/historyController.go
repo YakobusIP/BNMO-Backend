@@ -24,7 +24,7 @@ func RequestHistory(c *gin.Context) {
 	// Pull data from the requests table inside the database
 	// Pull only based on the number of offsets and limits specified
 	database.DATABASE.Offset(offset).Limit(limit).Where("account_id=?", id).Find(&getRequests)
-	database.DATABASE.Model(&models.Request{}).Count(&total)
+	database.DATABASE.Model(&models.Request{}).Where("account_id=?", id).Count(&total)
 
 	// Return data to frontend
 	c.JSON(http.StatusOK, gin.H{
@@ -51,7 +51,7 @@ func TransferHistory(c *gin.Context) {
 	// Pull data from the requests table inside the database
 	// Pull only based on the number of offsets and limits specified
 	database.DATABASE.Offset(offset).Limit(limit).Where("account_id=?", id).Find(&getTransfers)
-	database.DATABASE.Model(&models.Transfer{}).Count(&total)
+	database.DATABASE.Model(&models.Transfer{}).Where("account_id=?", id).Count(&total)
 
 	// Return data to frontend
 	c.JSON(http.StatusOK, gin.H{

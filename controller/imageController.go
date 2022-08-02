@@ -30,7 +30,7 @@ func Upload(c *gin.Context) {
 
 	for _, file := range files {
 		fileName = generateRandomName(5) + "-" + file.Filename
-		err := c.SaveUploadedFile(file, "./images/"+fileName)
+		err := c.SaveUploadedFile(file, "images/"+fileName)
 		if err != nil {
 			fmt.Println("Error in saving uploaded file", err)
 			return
