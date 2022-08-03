@@ -14,6 +14,7 @@ Merupakan bagian backend dari web application BNMO. Backend menggunakan bahasa p
 * Bahasa Go dengan framework Gin Gonic
 * MariaDB database (terdapat 3 buah tabel, yaitu tabel Account, tabel Requests, dan tabel Transfers)
 * Redis cache (data di dalam redis di set untuk hilang setelah 24 jam)
+* GORM (Go Object Relational Mapper)
 * Docker (menyimpan database MariaDB dengan versi paling terbaru, Redis cache dengan versi paling terbaru, dan bahasa Go dengan versi paling terbaru)
 
 ## Design Patterns
@@ -56,7 +57,7 @@ Terdapat 18 total endpoints yang digunakan dalam web application ini, dibagi ked
 ### Tidak membutuhkan autentikasi
 * **/api/register (Method: POST)**
   
-  Endpoint ini dipanggil ketika user ingin melakukan registrasi. Data user akan dicek dan dimasukkan ke dalam database. Apabila terdapat kesalahan input dari user, maka endpoint akan mengembalikan status beserta pesannya.
+  Endpoint ini dipanggil ketika user ingin melakukan registrasi. Data user akan dicek dan dimasukkan ke dalam database. Password yang dimasukkan oleh user akan di-hash menggunakan fungsi bcrypt. Apabila terdapat kesalahan input dari user, maka endpoint akan mengembalikan status beserta pesannya.
 * **/api/upload-image (Method: POST)**
   
   Endpoint ini dipanggil ketika user melakukan upload gambar KTP mereka. Gambar tersebut akan disimpan ke dalam folder images dan mengembalikan URL.
