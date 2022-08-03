@@ -18,15 +18,15 @@ Merupakan bagian backend dari web application BNMO. Backend menggunakan bahasa p
 
 ## Design Patterns
 Terdapat 2 design pattern yang digunakan dalam proses pembuatan backend dari web application BNMO ini, antara lain:
-* Facade: digunakan untuk routing, ketika API backend dipanggil oleh frontend, maka facade akan menerima panggilan tersebut dan menjalankan proses lain setelahnya.
-* Singleton: digunakan untuk objek database dan redis cache. Objek database dibentuk ketika program utama dijalankan dan akan terus menerus dipanggil apabila data yang tersimpan dibutuhkan atau akan diganti. Objek redis akan dibentuk ketika bagian frontend memanggil API yang membutuhkan konversi mata uang, dan setelah pembentukannya, maka objek redis ini akan terus menerus dipanggil untuk mengambil data di dalamnya.
+* **Facade**: digunakan untuk routing, ketika API backend dipanggil oleh frontend, maka facade akan menerima panggilan tersebut dan menjalankan proses lain setelahnya (seperti mengakses database, mengakses redis cache, atau melakukan kalkulasi).
+* **Singleton**: digunakan untuk objek database dan redis cache. Objek database dibentuk ketika program utama dijalankan dan akan terus menerus dipanggil apabila data yang tersimpan dibutuhkan atau akan diganti. Objek redis akan dibentuk ketika bagian frontend memanggil API yang membutuhkan konversi mata uang, dan setelah pembentukannya, maka objek redis ini akan terus menerus dipanggil untuk mengambil data di dalamnya.
 
 ## Requirements
 - [Docker](https://docs.docker.com/desktop/install/windows-install/)
 
 ## Setup
-1. Download file ZIP dari repository ini atau clone ke dalam komputer Anda
-2. Pastikan Docker sudah di-install dan dapat dijalankan
+1. Download file ZIP dari repository ini atau clone repository ke dalam komputer Anda
+2. Pastikan Docker **sudah di-install** dan dapat dijalankan
 3. Buka command prompt atau powershell dan pindahkan direktori ke folder tempat repository ini berada
 4. Jalankan command berikut untuk melakukan inisialisasi Dockerfile
 ```
@@ -36,7 +36,7 @@ docker build -t bnmo/redis -f Dockerfile .
 ```
 docker-compose up -d
 ```
-6. Setelah selesai, maka untuk menghubungkan program dengan database MariaDB dan redis cache, maka command berikut perlu dijalankan kembali
+6. Setelah selesai, maka untuk menghubungkan program dengan database MariaDB dan redis cache, maka command berikut **perlu** dijalankan kembali
 ```
 docker build -t bnmo/redis -f Dockerfile .
 ```
