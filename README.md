@@ -112,7 +112,7 @@ Terdapat 18 total endpoints yang digunakan dalam web application ini, dibagi ked
   Endpoint ini dipanggil ketika admin memilih untuk **accept** atau **reject** akun yang ada. Status request di dalam database akan berubah sesuai dengan pilihan admin. Apabila status accept, maka user akan diperbolehkan untuk login ke dalam aplikasi. Apabila status reject, maka user akan ditolak untuk login ke dalam aplikasi.
 * **/api/customerdata (Method: GET)**
   
-  Endpoint ini dipanggil ketika admin membuka halaman customer data. Endpoint akan mengembalikan data berisi seluruh akun yang pernah melakukan registrasi ke dalam aplikasi. Tidak terdapat pagination pada endpoint ini.
+  Endpoint ini dipanggil ketika admin membuka halaman customer data. Endpoint akan mengembalikan data berisi seluruh akun yang melakukan registrasi ke dalam aplikasi dan sudah di verifikasi oleh admin. Tidak terdapat pagination pada endpoint ini.
 
 ## Created By
 Nama                      | NIM
